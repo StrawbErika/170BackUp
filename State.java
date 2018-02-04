@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class State {
     public static final String BOX = "b";
     public static final String BOX_STORAGE = "B";
@@ -9,11 +11,16 @@ public class State {
     public static final String KEEPER_STORAGE = "K";
 
     private String[][] state;
+    private State parentState;
+    private ArrayList<String> actionsNeeded;
 
     private Coordinates keeperPosition;
+    private Coordinates parentKeeperPosition;
 
-    public State(String[][] state) {
-        this.state = state;
+    public State(String[][] state, State parentState, ArrayList actionsNeeded) {
+        this.parentState = parentState;
+        this.state = state; //board
+        this.actionsNeeded = actionsNeeded;
 
         // find keeper position and save it
         for (int i = 0; i < Game.ROWS; i++) {
@@ -22,10 +29,48 @@ public class State {
                     this.state[i][j].equals(State.KEEPER) ||
                     this.state[i][j].equals(State.KEEPER_STORAGE)
                 ) {
-                    this.keeperPosition = new Coordinates(i, j);
+                    this.keeperPosition = new Coordinates(i, j); //position of keeper
                 }
             }
         }
+    }
+
+    public void getPreviousAction(){
+      for (int i = 0; i < Game.ROWS; i++) {
+          for (int j = 0; j < Game.COLS; j++) {
+              if (
+                  this.parentState[i][j].equals(State.KEEPER) ||
+                  this.parentState[i][j].equals(State.KEEPER_STORAGE)
+              ) {
+                  this.parentKeeperPosition = new Coordinates(i, j); //position of keeper
+              }
+          }
+      }
+      int parentKY = this.parentKeeperPosition.getY();
+      int parentKX = this.parentKeeperPosition.getX();
+
+      int keeperY = this.keeperPosition.getY();
+      int keeperX = this.keeperPosition.getX();
+
+      int differenceY = keeperY - parentKY;
+      int differenceX = keeperX - parentKX;
+
+      if(differenceY == -1 && differenceX == 0){
+        System.out.println("up");
+      }
+      else if(differenceY == 1 && differenceX == 0){
+        System.out.println("down");
+      }
+      else if(differenceY == 0 && differenceX == -1){
+        System.out.println("left");
+      }
+      else if (differenceY == 0 && differenceX == 1){
+        System.out.println("right");
+      }
+    }
+
+    public State(String[][] state) {
+      this(state, null, new ArrayList<String>()); //call constructor
     }
 
     public String getValue(int i, int j) {
@@ -112,7 +157,85 @@ public class State {
             }
         }
     }
+    private void resetActionsNeeded(){
+      this.actionsNeeded.clear();
+    }
 
+    public void setActionsNeeded(String actions){
+      this.actionsNeeded.add(actions);
+    }
+
+    public void checkActions(){
+      this.resetActionsNeeded();
+        // System.out.println("up");
+      if(canMove(-1,0)){
+        this.setActionsNeeded("up");
+        // System.out.println("up");
+      }
+      if(canMove(1,0)){
+        this.setActionsNeeded("down");
+        // System.out.println("down");
+      }
+      if(canMove(0,-1)){
+        this.setActionsNeeded("left");
+        // System.out.println("left");
+      }
+      if(canMove(0,1)){
+        this.setActionsNeeded("right");
+        // System.out.println("right");
+      }
+
+    }
+
+    public boolean canMove(int y, int x){
+      // get value and coordinates of the destination grid, and the next after it
+      Coordinates currentCoordinates = new Coordinates(keeperPosition.getY(), keeperPosition.getX());
+      String currentValue = state[currentCoordinates.getY()][currentCoordinates.getX()];
+
+
+      Coordinates nextCoordinates = new Coordinates(keeperPosition.getY() + y, keeperPosition.getX() + x);
+      String nextValue = state[nextCoordinates.getY()][nextCoordinates.getX()];
+
+// is y or x != 0? Yes y or x * 2, No retain y or x
+      Coordinates nextNextCoordinates = new Coordinates(keeperPosition.getY() + (y != 0 ? y * 2 : y), keeperPosition.getX() + (x != 0 ? x * 2 : x));
+      String nextNextValue;
+      try {
+        nextNextValue = state[nextNextCoordinates.getY()][nextNextCoordinates.getX()];
+      }
+      catch(Exception e) {
+        nextNextValue = null;
+      }
+
+
+      if(nextValue.equals(State.WALL)){
+        return false;
+      }
+      else if(nextNextValue != null){
+        if((nextValue.equals(State.BOX) && nextNextValue.equals(State.WALL)) || (nextValue.equals(State.BOX_STORAGE) && nextNextValue.equals(State.WALL))){ // state box box
+          return false;
+        }
+        else if((nextValue.equals(State.BOX_STORAGE) && nextNextValue.equals(State.BOX)) || (nextValue.equals(State.BOX) && nextNextValue.equals(State.BOX)) || (nextValue.equals(State.BOX_STORAGE) && nextNextValue.equals(State.BOX_STORAGE))){
+            return false;
+        }
+        else{
+          return true;
+        }
+      }
+      else if(nextNextValue == null){
+        return false;
+      }
+      else{
+        return true;
+      }
+    }
+
+    public ArrayList<String> getActionsNeeded(){
+      return this.actionsNeeded;
+    }
+
+    public State getParentState(){
+      return this.parentState;
+    }
     public void moveUp() {
         this.move(-1, 0);
     }

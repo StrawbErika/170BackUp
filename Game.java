@@ -229,6 +229,8 @@ public class Game {
                 buttons[i][j].setIcon(icon);
             }
         }
+        checkActions();
+        this.currentState.getPreviousAction();
     }
 
     public void loadFile() {
@@ -281,6 +283,9 @@ public class Game {
         }
     }
 
+    public void checkActions(){
+      this.currentState.checkActions();
+    }
     public void moveUp() {
         this.currentState.moveUp();
         this.direction = "Back";
