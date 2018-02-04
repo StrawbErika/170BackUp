@@ -11,13 +11,13 @@ public class State {
     public static final String KEEPER_STORAGE = "K";
 
     private String[][] state;
-    private State parentState;
+    private String[][] parentState;
     private ArrayList<String> actionsNeeded;
 
     private Coordinates keeperPosition;
     private Coordinates parentKeeperPosition;
 
-    public State(String[][] state, State parentState, ArrayList actionsNeeded) {
+    public State(String[][] state, String[][] parentState, ArrayList actionsNeeded) {
         this.parentState = parentState;
         this.state = state; //board
         this.actionsNeeded = actionsNeeded;
@@ -36,36 +36,47 @@ public class State {
     }
 
     public void getPreviousAction(){
-      for (int i = 0; i < Game.ROWS; i++) {
+      String checkParent;
+      try {
+        checkParent = parentState[0][0];
+      }
+      catch(Exception e) {
+        checkParent = null;
+      }
+      System.out.println("eyop");
+
+      if(checkParent != null){
+        for (int i = 0; i < Game.ROWS; i++) {
           for (int j = 0; j < Game.COLS; j++) {
-              if (
-                  this.parentState[i][j].equals(State.KEEPER) ||
-                  this.parentState[i][j].equals(State.KEEPER_STORAGE)
-              ) {
-                  this.parentKeeperPosition = new Coordinates(i, j); //position of keeper
-              }
+            if (
+            this.parentState[i][j].equals(State.KEEPER) ||
+            this.parentState[i][j].equals(State.KEEPER_STORAGE)
+            ) {
+              this.parentKeeperPosition = new Coordinates(i, j); //position of keeper
+            }
           }
-      }
-      int parentKY = this.parentKeeperPosition.getY();
-      int parentKX = this.parentKeeperPosition.getX();
+        }
+        int parentKY = this.parentKeeperPosition.getY();
+        int parentKX = this.parentKeeperPosition.getX();
 
-      int keeperY = this.keeperPosition.getY();
-      int keeperX = this.keeperPosition.getX();
+        int keeperY = this.keeperPosition.getY();
+        int keeperX = this.keeperPosition.getX();
 
-      int differenceY = keeperY - parentKY;
-      int differenceX = keeperX - parentKX;
+        int differenceY = keeperY - parentKY;
+        int differenceX = keeperX - parentKX;
 
-      if(differenceY == -1 && differenceX == 0){
-        System.out.println("up");
-      }
-      else if(differenceY == 1 && differenceX == 0){
-        System.out.println("down");
-      }
-      else if(differenceY == 0 && differenceX == -1){
-        System.out.println("left");
-      }
-      else if (differenceY == 0 && differenceX == 1){
-        System.out.println("right");
+        if(differenceY == -1 && differenceX == 0){
+          System.out.println("up");
+        }
+        else if(differenceY == 1 && differenceX == 0){
+          System.out.println("down");
+        }
+        else if(differenceY == 0 && differenceX == -1){
+          System.out.println("left");
+        }
+        else if (differenceY == 0 && differenceX == 1){
+          System.out.println("right");
+        }
       }
     }
 
@@ -211,10 +222,13 @@ public class State {
         return false;
       }
       else if(nextNextValue != null){
-        if((nextValue.equals(State.BOX) && nextNextValue.equals(State.WALL)) || (nextValue.equals(State.BOX_STORAGE) && nextNextValue.equals(State.WALL))){ // state box box
+        if((nextValue.equals(State.BOX) && nextNextValue.equals(State.WALL)) ||
+          (nextValue.equals(State.BOX_STORAGE) && nextNextValue.equals(State.WALL))){ // state box box
           return false;
         }
-        else if((nextValue.equals(State.BOX_STORAGE) && nextNextValue.equals(State.BOX)) || (nextValue.equals(State.BOX) && nextNextValue.equals(State.BOX)) || (nextValue.equals(State.BOX_STORAGE) && nextNextValue.equals(State.BOX_STORAGE))){
+        else if((nextValue.equals(State.BOX_STORAGE) && nextNextValue.equals(State.BOX)) ||
+              (nextValue.equals(State.BOX) && nextNextValue.equals(State.BOX)) ||
+              (nextValue.equals(State.BOX_STORAGE) && nextNextValue.equals(State.BOX_STORAGE))){
             return false;
         }
         else{
@@ -233,7 +247,7 @@ public class State {
       return this.actionsNeeded;
     }
 
-    public State getParentState(){
+    public String[][] getParentState(){
       return this.parentState;
     }
     public void moveUp() {
