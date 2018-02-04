@@ -11,13 +11,14 @@ public class State {
     public static final String KEEPER_STORAGE = "K";
 
     private String[][] state;
-    private String[][] parentState;
+    private State parentState;
     private ArrayList<String> actionsNeeded;
 
     private Coordinates keeperPosition;
     private Coordinates parentKeeperPosition;
 
-    public State(String[][] state, String[][] parentState, ArrayList actionsNeeded) {
+//parentState.state -> to get the board of the parentState
+    public State(String[][] state, State parentState, ArrayList actionsNeeded) {
         this.parentState = parentState;
         this.state = state; //board
         this.actionsNeeded = actionsNeeded;
@@ -38,19 +39,18 @@ public class State {
     public void getPreviousAction(){
       String checkParent;
       try {
-        checkParent = parentState[0][0];
+        checkParent = this.getParentState().state[0][0];
       }
       catch(Exception e) {
         checkParent = null;
       }
-      System.out.println("eyop");
 
       if(checkParent != null){
         for (int i = 0; i < Game.ROWS; i++) {
           for (int j = 0; j < Game.COLS; j++) {
             if (
-            this.parentState[i][j].equals(State.KEEPER) ||
-            this.parentState[i][j].equals(State.KEEPER_STORAGE)
+            this.getParentState().state[i][j].equals(State.KEEPER) ||
+            this.getParentState().state[i][j].equals(State.KEEPER_STORAGE)
             ) {
               this.parentKeeperPosition = new Coordinates(i, j); //position of keeper
             }
@@ -178,22 +178,17 @@ public class State {
 
     public void checkActions(){
       this.resetActionsNeeded();
-        // System.out.println("up");
       if(canMove(-1,0)){
         this.setActionsNeeded("up");
-        // System.out.println("up");
       }
       if(canMove(1,0)){
         this.setActionsNeeded("down");
-        // System.out.println("down");
       }
       if(canMove(0,-1)){
         this.setActionsNeeded("left");
-        // System.out.println("left");
       }
       if(canMove(0,1)){
         this.setActionsNeeded("right");
-        // System.out.println("right");
       }
 
     }
@@ -247,9 +242,14 @@ public class State {
       return this.actionsNeeded;
     }
 
-    public String[][] getParentState(){
+    public void setParentState(String [][] initial){
+      this.parentState.state = initial;
+    }
+
+    public State getParentState(){
       return this.parentState;
     }
+
     public void moveUp() {
         this.move(-1, 0);
     }
