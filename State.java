@@ -4,24 +4,34 @@ public class State {
     public static final String BOX = "b";
     public static final String BOX_STORAGE = "B";
     public static final String FLOOR = "e";
-    public static final String KEEPER = "k";
     public static final String STORAGE = "s";
     public static final String WALL = "w";
     public static final String NONE = "x";
+    public static final String KEEPER = "k";
     public static final String KEEPER_STORAGE = "K";
 
     private String[][] state;
     private State parentState;
+    private String action;
     private ArrayList<String> actionsNeeded;
+    private ArrayList<String> possibleActions;
 
     private Coordinates keeperPosition;
     private Coordinates parentKeeperPosition;
 
 //parentState.state -> to get the board of the parentState
-    public State(String[][] state, State parentState, ArrayList actionsNeeded) {
+    public State(String[][] state, State parentState, String action) {
         this.parentState = parentState;
         this.state = state; //board
-        this.actionsNeeded = actionsNeeded;
+        this.action = action;
+
+        if (parentState!=null){
+          this.actionsNeeded = new ArrayList(parentState.getActionsNeeded());
+          actionsNeeded.add(action); // add the action for this state
+        }
+        else{
+          this.actionsNeeded = new ArrayList();
+        }
 
         // find keeper position and save it
         for (int i = 0; i < Game.ROWS; i++) {
@@ -36,52 +46,12 @@ public class State {
         }
     }
 
-    public void getPreviousAction(){
-      String checkParent;
-      try {
-        checkParent = this.getParentState().state[0][0];
-      }
-      catch(Exception e) {
-        checkParent = null;
-      }
-
-      if(checkParent != null){
-        for (int i = 0; i < Game.ROWS; i++) {
-          for (int j = 0; j < Game.COLS; j++) {
-            if (
-            this.getParentState().state[i][j].equals(State.KEEPER) ||
-            this.getParentState().state[i][j].equals(State.KEEPER_STORAGE)
-            ) {
-              this.parentKeeperPosition = new Coordinates(i, j); //position of keeper
-            }
-          }
-        }
-        int parentKY = this.parentKeeperPosition.getY();
-        int parentKX = this.parentKeeperPosition.getX();
-
-        int keeperY = this.keeperPosition.getY();
-        int keeperX = this.keeperPosition.getX();
-
-        int differenceY = keeperY - parentKY;
-        int differenceX = keeperX - parentKX;
-
-        if(differenceY == -1 && differenceX == 0){
-          System.out.println("up");
-        }
-        else if(differenceY == 1 && differenceX == 0){
-          System.out.println("down");
-        }
-        else if(differenceY == 0 && differenceX == -1){
-          System.out.println("left");
-        }
-        else if (differenceY == 0 && differenceX == 1){
-          System.out.println("right");
-        }
-      }
+    public State (State parentState, String action){
+      this(parentState.getState(), parentState, action);
     }
 
     public State(String[][] state) {
-      this(state, null, new ArrayList<String>()); //call constructor
+      this(state, null, null); //call constructor
     }
 
     public String getValue(int i, int j) {
@@ -242,12 +212,12 @@ public class State {
       return this.actionsNeeded;
     }
 
-    public void setParentState(String [][] initial){
-      this.parentState.state = initial;
-    }
-
     public State getParentState(){
       return this.parentState;
+    }
+
+    public String[][] getState(){
+      return this.state;
     }
 
     public void moveUp() {
@@ -294,3 +264,14 @@ public class State {
         return out;
     }
 }
+
+/*
+PathCost(path) function: A function that will return the cost of input path.
+A path/solution in this problem basically consists of the sequence of moves
+made by the keeper. For this particular problem and game, the pathcost would
+be the number of moves the keeper had made since the initial state.
+*/
+
+  public int pathCost(){
+    return this.actionsNeeded.count();
+  }

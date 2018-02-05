@@ -13,6 +13,7 @@ public class Game {
     private JFrame frame;
     private JButton buttons[][];
 
+    private State initialState;
     private State currentState;
 
     private boolean hasWon = false;
@@ -234,6 +235,7 @@ public class Game {
     }
 
     public void loadFile() {
+      System.out.println("called load");
         // load data from puzzle.in and save it to currentState
         String filename = "puzzle.in";
 
@@ -260,7 +262,6 @@ public class Game {
         catch(IOException ex) {
             System.out.println("Error reading file '" + filename + "'");
         }
-
         this.currentState = new State(contents);
     }
 
