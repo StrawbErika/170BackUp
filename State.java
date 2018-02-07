@@ -21,7 +21,16 @@ public class State {
 //parentState.state -> to get the board of the parentState
     public State(String[][] state, State parentState, String action) {
         this.parentState = parentState;
-        this.state = state; //board
+        this.state = new String[Game.ROWS][Game.COLS];
+
+        for (int i = 0; i < state.length; i++) {
+            for (int j = 0; j < state[i].length; j++) {
+              this.state[i][j] = state[i][j];
+            }
+        }
+
+
+
         this.action = action;
 
         if (parentState!=null){
@@ -46,19 +55,15 @@ public class State {
 
         if(action!=null){
           if(action.equals("up")){
-            System.out.println("up!");
             this.moveUp();
           }
           else if(action.equals("down")){
-            System.out.println("down!");
             this.moveDown();
           }
           else if(action.equals("left")){
-            System.out.println("left!");
             this.moveLeft();
           }
           else if(action.equals("right")){
-            System.out.println("right!");
             this.moveRight();
           }
         }
@@ -179,19 +184,15 @@ public class State {
       ArrayList<String> possibleActions = new ArrayList<String>();
 
       if(canMove(-1,0)){
-        System.out.println("up!!!!!!!!!!!!!!!!!!!!!!!!!");
         possibleActions.add("up");
       }
       if(canMove(1,0)){
-        System.out.println("do!!!!!!!!!!!!!!!!!!!!!!!!!");
         possibleActions.add("down");
       }
       if(canMove(0,-1)){
-        System.out.println("le!!!!!!!!!!!!!!!!!!!!!!!!!");
         possibleActions.add("left");
       }
       if(canMove(0,1)){
-        System.out.println("ri!!!!!!!!!!!!!!!!!!!!!!!!!");
         possibleActions.add("right");
       }
 
@@ -202,12 +203,10 @@ public class State {
       // get value and coordinates of the destination grid, and the next after it
       Coordinates currentCoordinates = new Coordinates(keeperPosition.getY(), keeperPosition.getX());
       String currentValue = state[currentCoordinates.getY()][currentCoordinates.getX()];
-      System.out.println("keeperPosition: " + keeperPosition.getY() + " " + keeperPosition.getX());
 
       Coordinates nextCoordinates = new Coordinates(keeperPosition.getY() + y, keeperPosition.getX() + x);
       String nextValue = state[nextCoordinates.getY()][nextCoordinates.getX()];
 
-      System.out.println("NextValue: " + nextValue);
 // is y or x != 0? Yes y or x * 2, No retain y or x
       Coordinates nextNextCoordinates = new Coordinates(keeperPosition.getY() + (y != 0 ? y * 2 : y), keeperPosition.getX() + (x != 0 ? x * 2 : x));
       String nextNextValue;
@@ -217,8 +216,6 @@ public class State {
       catch(Exception e) {
         nextNextValue = null;
       }
-
-      System.out.println("nextNextValue: " + nextNextValue);
 
 
       if(nextValue.equals(State.WALL)){

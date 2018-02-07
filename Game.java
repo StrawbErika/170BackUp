@@ -342,37 +342,25 @@ public class Game {
     public void moveUp() {
         this.currentState.moveUp();
         this.direction = "Back";
-        // State s;
-        // System.out.println("before: " + this.currentState.getKeeper().getY() + " " + this.currentState.getKeeper().getX());
-        // s = this.currentState.result(direction);
-        // System.out.println("after: " + s.getKeeper().getY() + " " + s.getKeeper().getX());
+      
     }
 
     public void moveDown() {
         this.currentState.moveDown();
         this.direction = "Front";
-        // State s;
-        // System.out.println("before: " + this.currentState.getKeeper().getY() + " " + this.currentState.getKeeper().getX());
-        // s = this.currentState.result(direction);
-        // System.out.println("after: " + s.getKeeper().getY() + " " + s.getKeeper().getX());
+      
     }
 
     public void moveLeft() {
         this.currentState.moveLeft();
         this.direction = "Left";
-        // State s;
-        // System.out.println("before: " + this.currentState.getKeeper().getY() + " " + this.currentState.getKeeper().getX());
-        // s = this.currentState.result(direction);
-        // System.out.println("after: " + s.getKeeper().getY() + " " + s.getKeeper().getX());
+      
     }
 
     public void moveRight() {
         this.currentState.moveRight();
         this.direction = "Right";
-        // State s;
-        // System.out.println("before: " + this.currentState.getKeeper().getY() + " " + this.currentState.getKeeper().getX());
-        // s = this.currentState.result(direction);
-        // System.out.println("after: " + s.getKeeper().getY() + " " + s.getKeeper().getX());
+      
     }
 
     public void checkWin() {
