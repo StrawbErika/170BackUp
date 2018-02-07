@@ -11,7 +11,9 @@ public class Game {
     public static final int COLS = 10;
 
     private JFrame frame;
+    private JFrame solve;
     private JButton buttons[][];
+    // private State BFS;
 
     private State initialState;
     private State currentState;
@@ -161,7 +163,7 @@ public class Game {
 
         Container pane = frame.getContentPane();
 
-        pane.setLayout(new GridLayout(10, 10));
+        pane.setLayout(new GridLayout(11, 10));
 
         // initialize all grid buttons
         for (int i = 0; i < Game.ROWS; i++) {
@@ -175,6 +177,22 @@ public class Game {
                 buttons[i][j] = button;
             }
         }
+        JButton button = new JButton("S");
+        button.setPreferredSize(new Dimension(64, 64)); //tile size
+        pane.add(button);
+        button.addActionListener( new ActionListener()
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+              System.out.println("Yo");
+
+              BFSAlgo.solve(currentState);
+              solveFrame();
+                // Create a method named "createFrame()", and set up an new frame there
+                // Call createFrame()
+            }
+        });
+
 
         frame.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent k) {
@@ -210,6 +228,40 @@ public class Game {
         frame.setFocusable(true);
         frame.pack();
         frame.setVisible(true);
+    }
+
+    public void solveFrame(){
+      System.out.println("yo");
+      solve = new JFrame("Solve!");
+      buttons = new JButton[Game.ROWS][Game.COLS];
+
+      Container pane = solve.getContentPane();
+
+      pane.setLayout(new GridLayout(11, 10));
+
+      // initialize all grid buttons
+      for (int i = 0; i < Game.ROWS; i++) {
+          for (int j = 0; j < Game.COLS; j++) {
+              JButton button = new JButton();
+
+              button.setPreferredSize(new Dimension(64, 64)); //tile size
+
+              pane.add(button);
+
+              buttons[i][j] = button;
+          }
+      }
+      JButton left = new JButton("<");
+      left.setPreferredSize(new Dimension(64, 64)); //tile size
+      pane.add(left);
+
+      JButton right = new JButton(">");
+      right.setPreferredSize(new Dimension(64, 64)); //tile size
+      pane.add(right);
+      solve.setResizable(false);
+      solve.setFocusable(true);
+      solve.pack();
+      solve.setVisible(true);
     }
 
     public void render() {
@@ -261,6 +313,7 @@ public class Game {
         catch(IOException ex) {
             System.out.println("Error reading file '" + filename + "'");
         }
+        this.initialState = new State(contents);
         this.currentState = new State(contents);
     }
 
@@ -287,35 +340,39 @@ public class Game {
       this.currentState.getPossibleActions();
     }
     public void moveUp() {
-        State s;
-        System.out.println("before: " + this.currentState.getKeeper().getY() + " " + this.currentState.getKeeper().getX());
+        this.currentState.moveUp();
         this.direction = "Back";
-        s = this.currentState.result("Up");
-        System.out.println("after: " + s.getKeeper().getY() + " " + s.getKeeper().getX());
+        // State s;
+        // System.out.println("before: " + this.currentState.getKeeper().getY() + " " + this.currentState.getKeeper().getX());
+        // s = this.currentState.result(direction);
+        // System.out.println("after: " + s.getKeeper().getY() + " " + s.getKeeper().getX());
     }
 
     public void moveDown() {
-        State s;
-        System.out.println("before: " + this.currentState.getKeeper().getY() + " " + this.currentState.getKeeper().getX());
+        this.currentState.moveDown();
         this.direction = "Front";
-        s = this.currentState.result("Down");
-        System.out.println("after: " + s.getKeeper().getY() + " " + s.getKeeper().getX());
+        // State s;
+        // System.out.println("before: " + this.currentState.getKeeper().getY() + " " + this.currentState.getKeeper().getX());
+        // s = this.currentState.result(direction);
+        // System.out.println("after: " + s.getKeeper().getY() + " " + s.getKeeper().getX());
     }
 
     public void moveLeft() {
-        State s;
-        System.out.println("before: " + this.currentState.getKeeper().getY() + " " + this.currentState.getKeeper().getX());
+        this.currentState.moveLeft();
         this.direction = "Left";
-        s = this.currentState.result(direction);
-        System.out.println("after: " + s.getKeeper().getY() + " " + s.getKeeper().getX());
+        // State s;
+        // System.out.println("before: " + this.currentState.getKeeper().getY() + " " + this.currentState.getKeeper().getX());
+        // s = this.currentState.result(direction);
+        // System.out.println("after: " + s.getKeeper().getY() + " " + s.getKeeper().getX());
     }
 
     public void moveRight() {
-        State s;
-        System.out.println("before: " + this.currentState.getKeeper().getY() + " " + this.currentState.getKeeper().getX());
+        this.currentState.moveRight();
         this.direction = "Right";
-        s = this.currentState.result(direction);
-        System.out.println("after: " + s.getKeeper().getY() + " " + s.getKeeper().getX());
+        // State s;
+        // System.out.println("before: " + this.currentState.getKeeper().getY() + " " + this.currentState.getKeeper().getX());
+        // s = this.currentState.result(direction);
+        // System.out.println("after: " + s.getKeeper().getY() + " " + s.getKeeper().getX());
     }
 
     public void checkWin() {
