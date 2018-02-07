@@ -230,8 +230,20 @@ public class State {
         this.move(0, 1);
     }
 
-    public State result(State state, String action){
-
+    public State result(String action){
+      if(action.equals("Up")){
+        this.moveUp();
+      }
+      else if(action.equals("Down")){
+        this.moveDown();
+      }
+      else if(action.equals("Left")){
+        this.moveLeft();
+      }
+      else if(action.equals("Right")){
+        this.moveRight();
+      }
+      return this;
     }
 
     public boolean isWin() {
@@ -264,6 +276,10 @@ public class State {
 
     public int pathCost(){
       return this.actionsNeeded.size();
+    }
+
+    public Coordinates getKeeper(){
+      return this.keeperPosition;
     }
 }
 

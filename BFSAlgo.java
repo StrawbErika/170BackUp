@@ -21,11 +21,11 @@ public class BFSAlgo {
       if(currentState.isWin()){
         return currentState;
       }
-      // else {
-        // for (int i=0; i!=list.size(); i++){
-          // frontier.add(Result(currentState, a))
-        // }
-      // }
+      else {
+        for (int i=0; i!=list.size(); i++){
+          frontier.add(currentState.result(list.get(i)));
+        }
+      }
     }
     return currentState;
   }
