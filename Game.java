@@ -231,7 +231,6 @@ public class Game {
             }
         }
         checkActions();
-        this.currentState.getPreviousAction();
     }
 
     public void loadFile() {
@@ -285,7 +284,7 @@ public class Game {
     }
 
     public void checkActions(){
-      this.currentState.checkActions();
+      this.currentState.getPossibleActions();
     }
     public void moveUp() {
         this.currentState.moveUp();
@@ -301,7 +300,6 @@ public class Game {
         this.currentState.moveLeft();
         this.direction = "Left";
     }
-
 
     public void moveRight() {
         this.currentState.moveRight();

@@ -14,7 +14,6 @@ public class State {
     private State parentState;
     private String action;
     private ArrayList<String> actionsNeeded;
-    private ArrayList<String> possibleActions;
 
     private Coordinates keeperPosition;
     private Coordinates parentKeeperPosition;
@@ -56,6 +55,18 @@ public class State {
 
     public String getValue(int i, int j) {
         return this.state[i][j];
+    }
+
+    public ArrayList<String> getActionsNeeded(){
+      return this.actionsNeeded;
+    }
+
+    public State getParentState(){
+      return this.parentState;
+    }
+
+    public String[][] getState(){
+      return this.state;
     }
 
     public void move(int y, int x) {
@@ -138,29 +149,24 @@ public class State {
             }
         }
     }
-    private void resetActionsNeeded(){
-      this.actionsNeeded.clear();
-    }
 
-    public void setActionsNeeded(String actions){
-      this.actionsNeeded.add(actions);
-    }
+    public ArrayList<String> getPossibleActions(){
+      ArrayList<String> possibleActions = new ArrayList<String>();
 
-    public void checkActions(){
-      this.resetActionsNeeded();
       if(canMove(-1,0)){
-        this.setActionsNeeded("up");
+        possibleActions.add("up");
       }
       if(canMove(1,0)){
-        this.setActionsNeeded("down");
+        possibleActions.add("down");
       }
       if(canMove(0,-1)){
-        this.setActionsNeeded("left");
+        possibleActions.add("left");
       }
       if(canMove(0,1)){
-        this.setActionsNeeded("right");
+        possibleActions.add("right");
       }
 
+      return possibleActions;
     }
 
     public boolean canMove(int y, int x){
@@ -208,18 +214,6 @@ public class State {
       }
     }
 
-    public ArrayList<String> getActionsNeeded(){
-      return this.actionsNeeded;
-    }
-
-    public State getParentState(){
-      return this.parentState;
-    }
-
-    public String[][] getState(){
-      return this.state;
-    }
-
     public void moveUp() {
         this.move(-1, 0);
     }
@@ -234,6 +228,10 @@ public class State {
 
     public void moveRight() {
         this.move(0, 1);
+    }
+
+    public State result(State state, String action){
+
     }
 
     public boolean isWin() {
@@ -263,6 +261,10 @@ public class State {
 
         return out;
     }
+
+    public int pathCost(){
+      return this.actionsNeeded.size();
+    }
 }
 
 /*
@@ -271,7 +273,3 @@ A path/solution in this problem basically consists of the sequence of moves
 made by the keeper. For this particular problem and game, the pathcost would
 be the number of moves the keeper had made since the initial state.
 */
-
-  public int pathCost(){
-    return this.actionsNeeded.count();
-  }
