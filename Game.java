@@ -15,9 +15,12 @@ public class Game {
     private JButton buttons[][];
     // private State BFS;
 
+    private int action = 0;
     private State initialState;
     private State currentState;
+    private ArrayList<State> solveStates;
 
+    private ArrayList<String> solveWinActions;
     private boolean hasWon = false;
 
     private HashMap<String, ImageIcon> iconMap = new HashMap<String, ImageIcon>();
@@ -184,15 +187,30 @@ public class Game {
         {
             public void actionPerformed(ActionEvent e)
             {
-              System.out.println("Yo");
+              State tempState= initialState;
 
-              BFSAlgo.solve(currentState);
+              long startTime = System.currentTimeMillis();
+              solveWinActions= (BFSAlgo.solve(currentState)).getActionsNeeded();
+              long endTime = System.currentTimeMillis();
+
+              System.out.println("That took "+ (endTime-startTime) + " milliseconds");
+              // System.out.println("WITHOUT EXPLORED");
+              System.out.println("WITH EXPLORED");
+
+              solveStates = new ArrayList<State>();
+              for(int i = 0; i!=solveWinActions.size(); i++){
+                initialState= initialState.result(initialState,solveWinActions.get(i));
+                solveStates.add(initialState);
+              }
+
+              initialState = tempState;
+
               solveFrame();
+              solveRender();
                 // Create a method named "createFrame()", and set up an new frame there
                 // Call createFrame()
             }
         });
-
 
         frame.addKeyListener(new KeyListener() {
             public void keyPressed(KeyEvent k) {
@@ -231,7 +249,6 @@ public class Game {
     }
 
     public void solveFrame(){
-      System.out.println("yo");
       solve = new JFrame("Solve!");
       buttons = new JButton[Game.ROWS][Game.COLS];
 
@@ -254,14 +271,67 @@ public class Game {
       JButton left = new JButton("<");
       left.setPreferredSize(new Dimension(64, 64)); //tile size
       pane.add(left);
+      left.addActionListener( new ActionListener()
+      {
+          public void actionPerformed(ActionEvent e)
+          {
+            if(action>0){
+              System.out.println("left: " + action);
+              action--;
+              initialState= solveStates.get(action);
+              System.out.println("left_after: " + action);
+              solveRender();
+            }
+            else{
+              solveRender();
+            }
+          }
+      });
 
       JButton right = new JButton(">");
       right.setPreferredSize(new Dimension(64, 64)); //tile size
       pane.add(right);
+      right.addActionListener( new ActionListener()
+      {
+          public void actionPerformed(ActionEvent e)
+          {
+            System.out.println(action);
+            if(action<solveWinActions.size()){
+              initialState= solveStates.get(action);
+              action++;
+              solveRender();
+            }
+            else{
+              solveRender();
+            }
+          }
+      });
+
       solve.setResizable(false);
       solve.setFocusable(true);
       solve.pack();
       solve.setVisible(true);
+    }
+
+    public void solveRender() {
+        // update values of buttons from currentState
+        for (int i = 0; i < Game.ROWS; i++) {
+            for (int j = 0; j < Game.COLS; j++) {
+                String currentValue = this.initialState.getValue(i, j);
+
+// append direction for the direction icons
+                if (currentValue.equals(State.KEEPER) || currentValue.equals(State.KEEPER_STORAGE)) {
+                    currentValue += this.direction;
+                }
+
+                buttons[i][j].setLabel("");
+
+                ImageIcon icon = iconMap.get(currentValue);
+
+                buttons[i][j].setIcon(icon);
+            }
+        }
+        checkActions();
     }
 
     public void render() {
@@ -342,25 +412,25 @@ public class Game {
     public void moveUp() {
         this.currentState.moveUp();
         this.direction = "Back";
-      
+
     }
 
     public void moveDown() {
         this.currentState.moveDown();
         this.direction = "Front";
-      
+
     }
 
     public void moveLeft() {
         this.currentState.moveLeft();
         this.direction = "Left";
-      
+
     }
 
     public void moveRight() {
         this.currentState.moveRight();
         this.direction = "Right";
-      
+
     }
 
     public void checkWin() {

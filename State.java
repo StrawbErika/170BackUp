@@ -29,8 +29,6 @@ public class State {
             }
         }
 
-
-
         this.action = action;
 
         if (parentState!=null){
