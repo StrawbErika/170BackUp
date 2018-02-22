@@ -75,6 +75,10 @@ public class State {
       this(state, null, null); //call constructor
     }
 
+    public State(State state) {
+      this(state.getState(), null, null); //call constructor
+    }
+
     public String getValue(int i, int j) {
         return this.state[i][j];
     }
