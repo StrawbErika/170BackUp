@@ -193,8 +193,7 @@ public class Game {
               long endTime = System.currentTimeMillis();
 
               System.out.println("That took "+ (endTime-startTime) + " milliseconds");
-              // System.out.println("WITHOUT EXPLORED");
-              System.out.println("WITH EXPLORED");
+              System.out.println("DFS");
 
 
               solveStates = new ArrayList<State>();

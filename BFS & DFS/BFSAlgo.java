@@ -26,7 +26,6 @@ public class BFSAlgo {
       else {
         for (int i=0; i!=list.size(); i++){
           State newState = currentState.result(currentState, list.get(i));
-          // String [][] board = newState.getState();
           boolean inList = false;
 
           for(int j = 0; j!=exploredList.size(); j++){
